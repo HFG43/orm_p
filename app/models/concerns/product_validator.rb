@@ -8,6 +8,6 @@ class ProductValidator < ActiveModel::Validator
         if record.stock < 0
             record.errors.add(:stock, 'Stock cannot be negative')
         end    
-    end    
+    end
 
 end    
