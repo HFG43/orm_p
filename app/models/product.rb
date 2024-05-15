@@ -23,9 +23,18 @@ class Product < ApplicationRecord
 
     validates_with ProductValidator
     
+    scope :available, -> (min=1) { where('stock >= ?', min) }
+    scope :order_price_asc, -> { order('price ASC') }
+
+    scope : order_price_asc_availabilities, -> { available.order_price_asc }
+
     def good_offer?
         self.price < 10
     end
+
+    def self.top_3_available
+        self.available.order_price_asc.limit(3).select(:description, :stock, :price)
+    end    
 
     private
     def notify_product_creation
