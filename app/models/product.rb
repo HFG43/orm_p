@@ -15,6 +15,8 @@ class Product < ApplicationRecord
     after_save :notify_product_creation
     after_save :push_notification, if: :good_offer?
 
+    before_update :price_notification_changed, if: :price_changed?
+
     validates :description, presence: { message: 'A description is needed to create a new product' }
     
     validates :sku, presence: true
@@ -26,7 +28,7 @@ class Product < ApplicationRecord
     scope :available, -> (min=1) { where('stock >= ?', min) }
     scope :order_price_asc, -> { order('price ASC') }
 
-    scope : order_price_asc_availabilities, -> { available.order_price_asc }
+    scope :order_price_asc_availabilities, -> { available.order_price_asc }
 
     def good_offer?
         self.price < 10
@@ -43,5 +45,12 @@ class Product < ApplicationRecord
 
     def push_notification
         puts "#{self.description} is now available at #{self.price}"
+    end
+
+    def price_notification_changed
+        puts "price has been modified"
+        puts "new price is #{self.price}, previous price was #{self.price_was}"
+        price_variation = (((self.price-self.price_was)/self.price_was)*100).round(2)
+        puts "Te price variation was of #{price_variation}%"
     end    
 end
