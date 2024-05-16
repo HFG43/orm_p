@@ -12,6 +12,8 @@
 #
 class Product < ApplicationRecord
 
+    has_many :shopping_cart_products
+    
     after_save :notify_product_creation
     after_save :push_notification, if: :good_offer?
 
