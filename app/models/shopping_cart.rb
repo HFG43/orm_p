@@ -11,7 +11,7 @@
 class ShoppingCart < ApplicationRecord
   belongs_to :user
   has_many :shopping_cart_products
-
+  has_many :products, through: :shopping_cart_products 
 
   
   #Este método se usará tras agregar o sacar cualquier producto del carrito
@@ -23,8 +23,8 @@ class ShoppingCart < ApplicationRecord
 
     total = 0
 
-    self.shopping_cart_products.includes(:product).each do |sc|
-      total += sc.product.price
+    self.products.each do |product|
+      total += product.price
     end
     
     total
